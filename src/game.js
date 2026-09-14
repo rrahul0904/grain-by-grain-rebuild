@@ -1,8 +1,12 @@
 import {
   TOTAL_GRAINS,
+  bestStorageKey,
   buildGrainSpecs,
+  challengeUrl,
   clamp,
   formatTime,
+  localDateSeed,
+  randomSeedLabel,
   seedFromString,
   sortingZoneFor,
 } from "./core.js";
@@ -36,6 +40,7 @@ const state = {
   paused: false,
   sound: localStorage.getItem("gbg-sound") !== "off",
   seed: 0,
+  seedLabel: "",
   width: 0,
   height: 0,
   dpr: 1,
@@ -78,13 +83,32 @@ function world() {
 
 function seedFromLocation() {
   const params = new URLSearchParams(location.search);
-  const raw = params.get("seed") || new Date().toISOString().slice(0, 10);
-  return { raw, seed: seedFromString(raw) };
+  const raw = params.get("seed") || localDateSeed();
+  return { raw, seed: seedFromString(raw), updateUrl: false };
+}
+
+function randomSeedInfo() {
+  let entropy;
+  if (globalThis.crypto?.getRandomValues) {
+    const values = new Uint32Array(1);
+    globalThis.crypto.getRandomValues(values);
+    entropy = values[0];
+  } else {
+    entropy = Math.floor(Math.random() * 0xffffffff);
+  }
+  const raw = randomSeedLabel(entropy);
+  return { raw, seed: seedFromString(raw), updateUrl: true };
+}
+
+function syncSeedUrl(raw) {
+  const url = challengeUrl(location.href, raw);
+  history.replaceState(null, "", url);
 }
 
 function resetGame(seedInfo = seedFromLocation()) {
   const { left, right, top, bottom, zoneWidth } = world();
   state.seed = seedInfo.seed;
+  state.seedLabel = seedInfo.raw;
   state.sorted.black = 0;
   state.sorted.gold = 0;
   state.startedAt = performance.now();
@@ -93,6 +117,8 @@ function resetGame(seedInfo = seedFromLocation()) {
   state.completeAt = null;
   state.paused = false;
   state.pointerOwners.clear();
+
+  if (seedInfo.updateUrl) syncSeedUrl(seedInfo.raw);
 
   const pileLeft = left + zoneWidth + 24;
   const pileRight = right - zoneWidth - 24;
@@ -122,8 +148,8 @@ function resetGame(seedInfo = seedFromLocation()) {
   closeDialog(pauseDialog);
   closeDialog(restartDialog);
   closeDialog(completeDialog);
-  updateHud();
   seedEl.textContent = seedInfo.raw;
+  updateHud();
 }
 
 function resetStickPositions() {
@@ -178,7 +204,7 @@ function updateHud() {
   goldCountEl.textContent = `${state.sorted.gold} / 90`;
   const current = elapsedMs();
   timerEl.textContent = formatTime(current);
-  const best = Number(localStorage.getItem("gbg-best") || 0);
+  const best = Number(localStorage.getItem(bestStorageKey(state.seedLabel)) || 0);
   bestEl.textContent = best ? `best ${formatTime(best)}` : "best —";
 }
 
@@ -468,8 +494,9 @@ function sortedTarget(grain) {
 function finishGame() {
   state.completeAt = performance.now();
   const result = elapsedMs(state.completeAt);
-  const best = Number(localStorage.getItem("gbg-best") || 0);
-  if (!best || result < best) localStorage.setItem("gbg-best", String(Math.round(result)));
+  const key = bestStorageKey(state.seedLabel);
+  const best = Number(localStorage.getItem(key) || 0);
+  if (!best || result < best) localStorage.setItem(key, String(Math.round(result)));
   completeTimeEl.textContent = formatTime(result);
   openDialog(completeDialog);
   updateHud();
@@ -518,7 +545,7 @@ document.querySelectorAll("[data-resume]").forEach((button) => button.addEventLi
   resumeGame();
 }));
 document.querySelector("[data-confirm-restart]").addEventListener("click", () => resetGame());
-document.querySelector("[data-replay]").addEventListener("click", () => resetGame());
+document.querySelector("[data-replay]").addEventListener("click", () => resetGame(randomSeedInfo()));
 
 soundButton.addEventListener("click", () => {
   state.sound = !state.sound;
@@ -532,11 +559,12 @@ soundButton.textContent = state.sound ? "Sound on" : "Sound off";
 
 document.querySelector("[data-share]").addEventListener("click", async () => {
   const text = `I sorted all 180 grains in ${formatTime(elapsedMs())} — a little order, one grain at a time.`;
+  const url = challengeUrl(location.href, state.seedLabel);
   try {
     if (navigator.share) {
-      await navigator.share({ title: "Grain By Grain", text, url: location.href });
+      await navigator.share({ title: "Grain By Grain", text, url });
     } else {
-      await navigator.clipboard.writeText(`${text} ${location.href}`);
+      await navigator.clipboard.writeText(`${text} ${url}`);
       showToast("Result copied");
     }
   } catch (error) {
@@ -545,10 +573,9 @@ document.querySelector("[data-share]").addEventListener("click", async () => {
 });
 
 document.querySelector("#copy-seed").addEventListener("click", async () => {
-  const url = new URL(location.href);
-  url.searchParams.set("seed", seedEl.textContent);
+  const url = challengeUrl(location.href, state.seedLabel);
   try {
-    await navigator.clipboard.writeText(url.href);
+    await navigator.clipboard.writeText(url);
     showToast("Challenge link copied");
   } catch {
     showToast("Copy unavailable");
