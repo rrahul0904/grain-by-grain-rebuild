@@ -12,6 +12,30 @@ export function formatTime(milliseconds) {
   return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 }
 
+export function localDateSeed(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+export function bestStorageKey(seedLabel) {
+  const normalized = String(seedLabel ?? "").trim() || "default";
+  return `gbg-best:v2:${encodeURIComponent(normalized)}`;
+}
+
+export function challengeUrl(href, seedLabel) {
+  const url = new URL(href);
+  url.searchParams.set("seed", String(seedLabel));
+  url.hash = "";
+  return url.href;
+}
+
+export function randomSeedLabel(entropy) {
+  const numeric = Number.isFinite(entropy) ? Math.abs(Math.floor(entropy)) : Date.now();
+  return `pile-${(numeric >>> 0).toString(36).padStart(7, "0")}`;
+}
+
 export function mulberry32(seed) {
   let a = seed >>> 0;
   return function random() {
