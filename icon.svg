@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Grain By Grain icon">
+  <rect width="512" height="512" rx="112" fill="#f1ede3"/>
+  <path d="M92 132c78 44 126 105 153 183" fill="none" stroke="#9a6f40" stroke-width="24" stroke-linecap="round"/>
+  <path d="M420 132c-78 44-126 105-153 183" fill="none" stroke="#9a6f40" stroke-width="24" stroke-linecap="round"/>
+  <g fill="#292725">
+    <ellipse cx="181" cy="270" rx="28" ry="11" transform="rotate(-16 181 270)"/>
+    <ellipse cx="217" cy="330" rx="28" ry="11" transform="rotate(12 217 330)"/>
+    <ellipse cx="158" cy="345" rx="28" ry="11" transform="rotate(-8 158 345)"/>
+  </g>
+  <g fill="#caa654">
+    <ellipse cx="331" cy="270" rx="28" ry="11" transform="rotate(16 331 270)"/>
+    <ellipse cx="295" cy="330" rx="28" ry="11" transform="rotate(-12 295 330)"/>
+    <ellipse cx="354" cy="345" rx="28" ry="11" transform="rotate(8 354 345)"/>
+  </g>
+</svg>
