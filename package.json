@@ -1,0 +1,16 @@
+{
+  "name": "grain-by-grain-rebuild",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A clean-room, dependency-free recreation of the tactile Grain By Grain sorting interaction.",
+  "scripts": {
+    "serve": "node scripts/serve.mjs",
+    "check": "node --check src/core.js && node --check src/game.js && node --check scripts/serve.mjs",
+    "test": "node --test",
+    "verify": "npm run check && npm test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

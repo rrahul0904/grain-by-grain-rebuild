@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#f1ede3" />
+  <meta name="description" content="Sort 180 tiny grains with two chopsticks. A clean-room tactile sorting experiment." />
+  <title>Grain By Grain — clean-room rebuild</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">ZEN MODE <span id="timer">00:00</span></p>
+        <h1>Grain By Grain</h1>
+      </div>
+      <div class="top-actions" aria-label="Game controls">
+        <button id="sound-toggle" class="quiet-button" type="button">Sound on</button>
+        <button id="pause-button" class="quiet-button" type="button">Pause</button>
+        <button id="restart-button" class="quiet-button" type="button">Restart</button>
+      </div>
+    </header>
+
+    <section class="hud" aria-live="polite">
+      <div><span class="hud-label">Black grains</span><strong id="black-count">0 / 90</strong></div>
+      <div class="hud-center"><strong id="status">0 / 180 grains sorted</strong><span id="best-time">best —</span></div>
+      <div class="hud-right"><span class="hud-label">Golden grains</span><strong id="gold-count">0 / 90</strong></div>
+    </section>
+
+    <section id="game-shell" class="game-shell" aria-label="Interactive grain sorting table">
+      <canvas id="game-canvas"></canvas>
+      <div class="touch-hint">Drag either chopstick tip · hold · release to flick</div>
+    </section>
+
+    <section class="controls" aria-label="Keyboard controls">
+      <div class="control-card">
+        <p class="control-label">LEFT STICK</p>
+        <div class="key-grid wasd" aria-hidden="true"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></div>
+        <p><kbd>SPACE</kbd> hold / release <span aria-hidden="true">→</span></p>
+      </div>
+      <div class="tagline">
+        <p>A little order, one grain at a time.</p>
+        <button id="copy-seed" class="seed-button" type="button">seed <span id="seed-label">today</span> · copy challenge</button>
+      </div>
+      <div class="control-card control-right">
+        <p class="control-label">RIGHT STICK</p>
+        <div class="key-grid arrows" aria-hidden="true"><kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd></div>
+        <p><span aria-hidden="true">←</span> <kbd>ENTER</kbd> hold / release</p>
+      </div>
+    </section>
+
+    <footer>
+      <span>Clean-room interaction study · dependency-free Canvas build</span>
+      <span>Esc pauses · R restarts</span>
+    </footer>
+  </main>
+
+  <dialog id="pause-dialog" class="dialog-card">
+    <form method="dialog">
+      <p class="dialog-kicker">PAUSED</p>
+      <h2>A quiet moment.</h2>
+      <p>Your grains aren't going anywhere.</p>
+      <button class="primary" type="button" data-resume>Keep sorting</button>
+    </form>
+  </dialog>
+
+  <dialog id="restart-dialog" class="dialog-card">
+    <form method="dialog">
+      <p class="dialog-kicker">START OVER</p>
+      <h2>A fresh little mess?</h2>
+      <p>This will replace your current pile.</p>
+      <div class="dialog-actions">
+        <button class="danger" type="button" data-confirm-restart>Start again</button>
+        <button type="button" data-resume>Keep sorting</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="complete-dialog" class="dialog-card complete-card">
+    <form method="dialog">
+      <p class="dialog-kicker">ALL 180 SORTED</p>
+      <h2>Order, grain by grain.</h2>
+      <p class="complete-time" id="complete-time">00:00</p>
+      <div class="dialog-actions">
+        <button class="primary" type="button" data-share>Share your result</button>
+        <button type="button" data-replay>New pile</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="./src/game.js"></script>
+</body>
+</html>

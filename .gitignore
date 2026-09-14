@@ -1,0 +1,11 @@
+.DS_Store
+node_modules/
+.vercel/
+*.log
+coverage/
+playwright-report/
+test-results/
+
+# local smoke-test scratch
+chromium.err
+dom.html
