@@ -1,6 +1,6 @@
 # Grain By Grain — clean-room rebuild
 
-A dependency-free recreation of the tactile sorting concept at `grainbygrain.sotak.com`: 180 grains, two chopsticks, two sorting trays, keyboard + pointer controls, Zen timer, pause/restart/share flows, deterministic challenge seeds, synthesized micro-audio, haptics, and personal-best persistence.
+A dependency-free recreation of the tactile sorting concept at `grainbygrain.sotak.com`: 180 grains, two chopsticks, two sorting trays, keyboard + pointer controls, Zen timer, pause/restart/share flows, deterministic challenge seeds, synthesized micro-audio, haptics, and per-challenge personal-best persistence.
 
 > **Clean-room note:** This repository is an independent implementation based on publicly observable behavior. No source code or private assets from the reference product are included.
 
@@ -21,16 +21,25 @@ Open `http://127.0.0.1:4173`.
 - `Esc`: pause.
 - `R`: restart confirmation.
 
+## Challenge behavior
+
+- The default pile is keyed to the player's **local calendar date**.
+- `?seed=<value>` reproduces the same 180-grain pile exactly.
+- Personal-best times are stored **per seed**, so unrelated piles never share a record.
+- Copy/share actions always pin the active seed into the URL.
+- **Restart** replays the active pile.
+- **New pile** creates a fresh deterministic seed and writes it into the address bar so refresh keeps the same pile.
+
 ## Architecture
 
 - HTML/CSS + Canvas 2D.
 - Custom lightweight particle collision model (no runtime dependencies).
 - Web Audio oscillator micro-sounds; no media assets required.
-- Local storage for best time and sound setting.
-- URL seeds for reproducible piles.
+- Local storage for per-seed best times and the sound setting.
+- URL seeds for reproducible piles and shareable challenges.
 - Node's built-in test runner and syntax checks for CI.
 
-See `docs/ARCHITECTURE.md` and `docs/VERIFICATION.md`.
+See `docs/ARCHITECTURE.md`, `docs/VERIFICATION.md`, and `docs/PHASE2.md`.
 
 ## Deployment
 
