@@ -1,6 +1,6 @@
 # Grain By Grain — clean-room rebuild
 
-A dependency-free recreation of the tactile sorting concept at `grainbygrain.sotak.com`: 180 grains, two chopsticks, two sorting trays, keyboard + pointer controls, Zen timer, pause/restart/share flows, deterministic challenge seeds, synthesized micro-audio, haptics, and per-challenge personal-best persistence.
+A dependency-free recreation of the tactile sorting concept at `grainbygrain.sotak.com`: 180 grains, two chopsticks, two sorting trays, keyboard + pointer controls, Zen timer, pause/restart/share flows, deterministic challenge seeds, synthesized micro-audio, haptics, per-challenge personal-best persistence, and an installable offline-capable web shell.
 
 > **Clean-room note:** This repository is an independent implementation based on publicly observable behavior. No source code or private assets from the reference product are included.
 
@@ -30,6 +30,13 @@ Open `http://127.0.0.1:4173`.
 - **Restart** replays the active pile.
 - **New pile** creates a fresh deterministic seed and writes it into the address bar so refresh keeps the same pile.
 
+## Offline / installable web app
+
+- `manifest.webmanifest` makes the app installable on supporting browsers.
+- `sw.js` precaches the gameplay-critical shell after the first successful HTTPS visit.
+- Offline support is progressive enhancement; service-worker failure never blocks the core game.
+- No backend or environment variable is required for install/offline behavior.
+
 ## Architecture
 
 - HTML/CSS + Canvas 2D.
@@ -37,7 +44,8 @@ Open `http://127.0.0.1:4173`.
 - Web Audio oscillator micro-sounds; no media assets required.
 - Local storage for per-seed best times and the sound setting.
 - URL seeds for reproducible piles and shareable challenges.
-- Node's built-in test runner and syntax checks for CI.
+- Versioned service-worker app shell for offline replay.
+- Node's built-in test runner and syntax/static-contract checks for CI.
 
 See `docs/ARCHITECTURE.md`, `docs/VERIFICATION.md`, and `docs/PHASE2.md`.
 
